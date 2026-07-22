@@ -1,5 +1,5 @@
-// tests/cv-optional-sections.test.mjs — the optional CV sections (projects,
-// education) must vanish entirely when they have no entries, rather than
+// tests/cv-optional-sections.test.mjs — optional CV sections (projects,
+// education, certifications) must vanish entirely when they have no entries, rather than
 // rendering a bare section header with nothing under it.
 //
 // #1879 fixed this for projects; the education half is the same bug (not every
@@ -13,8 +13,12 @@ import { stripEmptySections } from '../cv-sections-core.mjs';
 
 console.log('\ncv-sections-core.mjs — optional sections leave no bare header');
 
-const EMPTY = { projects: [], education: [] };
-const FULL = { projects: [{ name: 'P' }], education: [{ degree: 'D' }] };
+const EMPTY = { projects: [], education: [], certifications: [] };
+const FULL = {
+  projects: [{ name: 'P' }],
+  education: [{ degree: 'D' }],
+  certifications: [{ title: 'C' }],
+};
 
 function check(label, actual, expected) {
   if (actual === expected) pass(label);

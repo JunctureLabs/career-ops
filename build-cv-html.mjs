@@ -291,6 +291,7 @@ function renderReport(payload) {
     LANG: escapeHtml(payload.lang || 'en'),
     PAGE_WIDTH: pageWidth,
     NAME: escapeHtml(candidate.name || ''),
+    TARGET_ROLE: escapeHtml(candidate.target_role || ''),
     SECTION_SUMMARY: escapeHtml(sectionTitles.summary),
     SUMMARY_TEXT: escapeHtml(payload.summary || ''),
     SECTION_COMPETENCIES: escapeHtml(sectionTitles.competencies),
@@ -318,8 +319,11 @@ function renderHtml(template, payload) {
   // no <img>), so they are rebuilt as whole blocks before placeholder fill.
   let html = template.replace(CONTACT_ROW_RE, () => buildContactRow(candidate));
   html = html.replace(/\{\{PHOTO\}\}/g, () => buildPhoto(candidate, candidate.name));
+  if (!candidate.target_role) {
+    html = html.replace(/\s*<div class="target-role">\{\{TARGET_ROLE\}\}<\/div>/, '');
+  }
 
-  // Drop the optional sections (projects, education) that have no entries, so
+  // Drop optional sections that have no entries, so
   // an absent one leaves no bare header behind. See cv-sections-core.mjs.
   html = stripEmptySections(html, payload, 'html');
 

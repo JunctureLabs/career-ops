@@ -33,6 +33,7 @@ const PATTERNS = {
   html: {
     projects: new RegExp(String.raw`<!--\s+PROJECTS\s+-->[\s\S]*?` + HTML_BOUNDARY),
     education: new RegExp(String.raw`<!--\s+EDUCATION\s+-->[\s\S]*?` + HTML_BOUNDARY),
+    certifications: new RegExp(String.raw`<!--\s+CERTIFICATIONS\s+-->[\s\S]*?` + HTML_BOUNDARY),
   },
   tex: {
     projects: new RegExp(String.raw`%{4,}\s+PROJECTS\s+%{4,}[\s\S]*?` + TEX_BOUNDARY),
@@ -40,7 +41,7 @@ const PATTERNS = {
   },
 };
 
-export const OPTIONAL_SECTIONS = ['projects', 'education'];
+export const OPTIONAL_SECTIONS = ['projects', 'education', 'certifications'];
 
 export function isEmptySection(payload, section) {
   const entries = payload?.[section];
