@@ -48,7 +48,10 @@ async function gotoResilient(page: Page, url: string): Promise<Response | null> 
  *  (a closed Greenhouse posting redirects to the board, whose keyword/department
  *  filters would otherwise look like a fillable form). */
 function looksLikeApplicationForm(form: ExtractedForm): boolean {
-  const fs = form.fields;
+  // SAP SuccessFactors/IDB keeps cookie-preference switches in the DOM after
+  // the banner is dismissed. They are not application fields, and otherwise a
+  // page with four such switches is falsely classified as a usable form.
+  const fs = form.fields.filter((f) => !/\bcookie|cookies|consent to all advertising\b/i.test(`${f.label || ""} ${f.nativeId || ""} ${f.nativeName || ""}`));
   if (fs.length === 0) return false;
   const lab = (f: ApplyField) => (f.label || "").toLowerCase();
   const hasFile = fs.some((f) => f.type === "file");

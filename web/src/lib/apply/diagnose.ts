@@ -102,11 +102,15 @@ export async function tryApplyTrigger(page: Page): Promise<boolean> {
     }
     // 2) Otherwise click a visible Apply CTA (never a submit). dropNewTabs() has
     //    already neutralised target=_blank / window.open so it stays in-tab.
-    const t = page
+    const candidates = page
       .getByRole("button", { name: /apply|start application|begin application/i })
-      .or(page.getByRole("link", { name: /apply/i }))
-      .first();
-    if ((await t.count().catch(() => 0)) && (await t.isVisible().catch(() => false))) {
+      .or(page.getByRole("link", { name: /apply/i }));
+    // Some SAP pages render a hidden duplicate CTA before the visible one.  Do
+    // not stop at .first(); choose the first visible, non-final control instead.
+    const n = await candidates.count().catch(() => 0);
+    for (let i = 0; i < n; i++) {
+      const t = candidates.nth(i);
+      if (!(await t.isVisible().catch(() => false))) continue;
       const label = (await t.innerText().catch(() => "")).toLowerCase();
       if (/submit|applied|withdraw/.test(label)) return false;
       await t.click({ timeout: 3000 }).catch(() => {});
